@@ -18,9 +18,11 @@ async function bootstrap() {
         .setVersion('1.0.0')
         .addBearerAuth()
         .build();
+    const PORT = process.env.PORT || 3000;
+    console.log('===PORT===', PORT);
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document);
-    await app.listen(3000);
+    await app.listen(PORT || 3000);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
