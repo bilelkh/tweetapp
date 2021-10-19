@@ -1,6 +1,6 @@
-import { TweetService } from './tweet.service';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
+import { TweetService } from './tweet.service';
 export declare class TweetController {
     private readonly tweetService;
     constructor(tweetService: TweetService);

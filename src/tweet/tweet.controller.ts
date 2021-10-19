@@ -1,17 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
-import { TweetService } from './tweet.service';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
-import { ApiTags } from '@nestjs/swagger';
-
+import { TweetService } from './tweet.service';
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @ApiTags('Tweet')
 @Controller('tweet')
 export class TweetController {
@@ -28,17 +32,28 @@ export class TweetController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tweetService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const result = await this.tweetService.findOne(+id);
+    console.log('====resomt===', result);
+    if (!result) throw new NotFoundException('tweet not found');
+    return result;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTweetDto: UpdateTweetDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateTweetDto: UpdateTweetDto,
+  ) {
+    const result = await this.tweetService.findOne(+id);
+    if (!result) throw new NotFoundException('tweet not found');
+
     return this.tweetService.update(+id, updateTweetDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
+    const result = await this.tweetService.findOne(+id);
+    if (!result) throw new NotFoundException('tweet not found');
     return this.tweetService.delete(+id);
   }
 }

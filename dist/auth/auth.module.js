@@ -17,6 +17,7 @@ const user_entity_1 = require("./entities/user.entity");
 const config_module_1 = require("../config/config.module");
 const config_service_1 = require("../config/config.service");
 const user_service_1 = require("./user.service");
+const jwt_strategy_1 = require("./jwt.strategy");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -36,7 +37,7 @@ AuthModule = __decorate([
             }),
             config_module_1.ConfigModule,
         ],
-        providers: [auth_service_1.AuthService, user_service_1.UserService],
+        providers: [auth_service_1.AuthService, user_service_1.UserService, jwt_strategy_1.JwtStrategy],
         controllers: [auth_controller_1.AuthController],
     })
 ], AuthModule);

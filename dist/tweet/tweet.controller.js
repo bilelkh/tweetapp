@@ -14,10 +14,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TweetController = void 0;
 const common_1 = require("@nestjs/common");
-const tweet_service_1 = require("./tweet.service");
+const passport_1 = require("@nestjs/passport");
+const swagger_1 = require("@nestjs/swagger");
 const create_tweet_dto_1 = require("./dto/create-tweet.dto");
 const update_tweet_dto_1 = require("./dto/update-tweet.dto");
-const swagger_1 = require("@nestjs/swagger");
+const tweet_service_1 = require("./tweet.service");
 let TweetController = class TweetController {
     constructor(tweetService) {
         this.tweetService = tweetService;
@@ -28,13 +29,23 @@ let TweetController = class TweetController {
     findAll() {
         return this.tweetService.findAll();
     }
-    findOne(id) {
-        return this.tweetService.findOne(+id);
+    async findOne(id) {
+        const result = await this.tweetService.findOne(+id);
+        console.log('====resomt===', result);
+        if (!result)
+            throw new common_1.NotFoundException('tweet not found');
+        return result;
     }
-    update(id, updateTweetDto) {
+    async update(id, updateTweetDto) {
+        const result = await this.tweetService.findOne(+id);
+        if (!result)
+            throw new common_1.NotFoundException('tweet not found');
         return this.tweetService.update(+id, updateTweetDto);
     }
-    remove(id) {
+    async remove(id) {
+        const result = await this.tweetService.findOne(+id);
+        if (!result)
+            throw new common_1.NotFoundException('tweet not found');
         return this.tweetService.delete(+id);
     }
 };
@@ -56,7 +67,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], TweetController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
@@ -64,16 +75,18 @@ __decorate([
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_tweet_dto_1.UpdateTweetDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], TweetController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], TweetController.prototype, "remove", null);
 TweetController = __decorate([
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, swagger_1.ApiTags)('Tweet'),
     (0, common_1.Controller)('tweet'),
     __metadata("design:paramtypes", [tweet_service_1.TweetService])

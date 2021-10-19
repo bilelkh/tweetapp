@@ -22,7 +22,9 @@ let AuthService = class AuthService {
         this.configService = configService;
     }
     async register(register) {
-        return await this.userService.create(register);
+        const result = await this.userService.create(register);
+        delete result.password;
+        return result;
     }
     async login(loginData) {
         const user = await this.userService.findOneByEmail(loginData.email);

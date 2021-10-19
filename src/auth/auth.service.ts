@@ -16,7 +16,11 @@ export class AuthService {
   ) {}
 
   async register(register: RegisterDto): Promise<User> {
-    return await this.userService.create(register);
+    const result = await this.userService.create(register);
+
+    delete result.password;
+
+    return result;
   }
 
   // todo: return type
