@@ -31,7 +31,6 @@ let TweetController = class TweetController {
     }
     async findOne(id) {
         const result = await this.tweetService.findOne(+id);
-        console.log('====resomt===', result);
         if (!result)
             throw new common_1.NotFoundException('tweet not found');
         return result;
