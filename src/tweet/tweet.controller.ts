@@ -34,7 +34,6 @@ export class TweetController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const result = await this.tweetService.findOne(+id);
-    console.log('====resomt===', result);
     if (!result) throw new NotFoundException('tweet not found');
     return result;
   }
